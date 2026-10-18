@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="100%" height="100%" style="background:#0f172a; font-family:'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;">
+  <!-- Window Background -->
+  <rect width="1200" height="680" rx="16" fill="#f1f5f9"/>
+
+  <!-- Top bar preview -->
+  <rect width="1200" height="48" fill="#082f49"/>
+  <text x="24" y="29" fill="#ffffff" font-size="13" font-weight="bold">IMPACTO AVIATION • MÓDULO DE EMISSÃO DA LISTA OFICIAL DE DESIGNAÇÃO</text>
+  <rect x="940" y="10" width="230" height="28" rx="6" fill="#0284c7"/>
+  <text x="960" y="28" fill="#ffffff" font-size="11" font-weight="bold">🖨️ Imprimir Lista A4 (Paisagem)</text>
+
+  <!-- A4 Landscape Sheet Preview -->
+  <g transform="translate(60, 68)">
+    <!-- Sheet Shadow & Border -->
+    <rect x="0" y="0" width="1080" height="570" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+
+    <!-- Document Header -->
+    <rect x="16" y="16" width="1048" height="64" fill="#f8fafc" stroke="#082f49" stroke-width="1.5"/>
+    <!-- Logo block -->
+    <rect x="28" y="24" width="48" height="48" rx="4" fill="#082f49"/>
+    <text x="52" y="54" fill="#ffffff" font-size="18" font-weight="bold" text-anchor="middle">IA</text>
+    <text x="88" y="44" fill="#082f49" font-size="15" font-weight="900" letter-spacing="1">IMPACTO AVIATION MANUTENÇÃO AERONÁUTICA</text>
+    <text x="88" y="60" fill="#475569" font-size="11" font-weight="bold">LISTA DE DESIGNAÇÃO DE PESSOAL TÉCNICO • RBAC 145 / EASA PART-145</text>
+
+    <!-- Meta Right Box -->
+    <text x="900" y="38" fill="#082f49" font-size="10" font-weight="bold">BASE: TOTAL (TODAS AS BASES)</text>
+    <text x="900" y="52" fill="#475569" font-size="10">EMISSÃO: 15/10/2026</text>
+    <text x="900" y="66" fill="#475569" font-size="10">REVISÃO: REV. 08 • PÁG. 1/1</text>
+
+    <!-- Table Grid -->
+    <g transform="translate(16, 92)">
+      <!-- Main Table Header -->
+      <rect x="0" y="0" width="1048" height="32" fill="#082f49"/>
+      <text x="8" y="20" fill="#ffffff" font-size="9" font-weight="bold">IMP</text>
+      <text x="50" y="20" fill="#ffffff" font-size="9" font-weight="bold">NOME DO MECÂNICO</text>
+      <text x="210" y="20" fill="#ffffff" font-size="9" font-weight="bold">BASE</text>
+      <text x="245" y="20" fill="#ffffff" font-size="9" font-weight="bold">CANAC</text>
+      <text x="295" y="20" fill="#ffffff" font-size="9" font-weight="bold">CHT VENC.</text>
+      <text x="365" y="20" fill="#ffffff" font-size="9" font-weight="bold">FAA A&amp;P</text>
+
+      <!-- Functions Divider -->
+      <text x="440" y="20" fill="#bae6fd" font-size="9" font-weight="bold">FUNÇÕES DESIGNADAS (RII / RUN-UP / NDT / BSK)</text>
+
+      <!-- Fleet Divider -->
+      <text x="790" y="20" fill="#fef08a" font-size="9" font-weight="bold">FROTAS HOMOLOGADAS (ATR / A320 / B737 / E190)</text>
+
+      <!-- Table Rows -->
+      <!-- Row 1 -->
+      <rect x="0" y="32" width="1048" height="28" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="8" y="50" fill="#0f172a" font-size="9" font-weight="bold">MEC-001</text>
+      <text x="50" y="50" fill="#0f172a" font-size="9" font-weight="bold">Ademir Santana Junior</text>
+      <text x="210" y="50" fill="#0284c7" font-size="9" font-weight="bold">REC</text>
+      <text x="245" y="50" fill="#475569" font-size="9">138942</text>
+      <text x="295" y="50" fill="#15803d" font-size="9" font-weight="bold">30/04/2027</text>
+      <text x="365" y="50" fill="#0284c7" font-size="9">4198231</text>
+      <text x="440" y="50" fill="#0f172a" font-size="8">RII: SIM | RUN-UP: SIM | BORO: SIM | NDT: NÃO</text>
+      <text x="790" y="50" fill="#0f172a" font-size="8">ATR72: SIM | A320: SIM | B737: SIM | E190: NÃO</text>
+
+      <!-- Row 2 -->
+      <rect x="0" y="60" width="1048" height="28" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="8" y="78" fill="#0f172a" font-size="9" font-weight="bold">MEC-005</text>
+      <text x="50" y="78" fill="#0f172a" font-size="9" font-weight="bold">Claudio Jair Ferreira</text>
+      <text x="210" y="78" fill="#0284c7" font-size="9" font-weight="bold">REC</text>
+      <text x="245" y="78" fill="#475569" font-size="9">119842</text>
+      <text x="295" y="78" fill="#e11d48" font-size="9" font-weight="bold">31/01/2026 ⚠️</text>
+      <text x="365" y="78" fill="#94a3b8" font-size="9">-</text>
+      <text x="440" y="78" fill="#0f172a" font-size="8">RII: SIM | RUN-UP: SIM | BORO: NÃO | NDT: NÃO</text>
+      <text x="790" y="78" fill="#e11d48" font-size="8" font-weight="bold">ATR72: SIM | A320: SIM (CURSO VENCIDO)</text>
+
+      <!-- Row 3 -->
+      <rect x="0" y="88" width="1048" height="28" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="8" y="106" fill="#0f172a" font-size="9" font-weight="bold">MEC-007</text>
+      <text x="50" y="106" fill="#0f172a" font-size="9" font-weight="bold">Daniel Santos de Oliveira</text>
+      <text x="210" y="106" fill="#0284c7" font-size="9" font-weight="bold">GRU</text>
+      <text x="245" y="106" fill="#475569" font-size="9">149204</text>
+      <text x="295" y="106" fill="#15803d" font-size="9" font-weight="bold">31/08/2027</text>
+      <text x="365" y="106" fill="#0284c7" font-size="9">3829104</text>
+      <text x="440" y="106" fill="#0f172a" font-size="8">RII: SIM | RUN-UP: SIM | BORO: SIM | NDT: SIM</text>
+      <text x="790" y="106" fill="#0f172a" font-size="8">ATR72: NÃO | A320: SIM | B737: SIM | E190: SIM</text>
+
+      <!-- Row 4 -->
+      <rect x="0" y="116" width="1048" height="28" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="8" y="134" fill="#0f172a" font-size="9" font-weight="bold">MEC-011</text>
+      <text x="50" y="134" fill="#0f172a" font-size="9" font-weight="bold">Franco Ferreira Ramos</text>
+      <text x="210" y="134" fill="#0284c7" font-size="9" font-weight="bold">REC</text>
+      <text x="245" y="134" fill="#475569" font-size="9">142109</text>
+      <text x="295" y="134" fill="#15803d" font-size="9" font-weight="bold">30/11/2027</text>
+      <text x="365" y="134" fill="#94a3b8" font-size="9">-</text>
+      <text x="440" y="134" fill="#0f172a" font-size="8">RII: NÃO | RUN-UP: SIM | BORO: NÃO | NDT: NÃO</text>
+      <text x="790" y="134" fill="#0f172a" font-size="8">ATR72: SIM | A320: SIM | B737: NÃO | E190: NÃO</text>
+
+      <!-- Row 5 -->
+      <rect x="0" y="144" width="1048" height="28" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="8" y="162" fill="#0f172a" font-size="9" font-weight="bold">MEC-016</text>
+      <text x="50" y="162" fill="#0f172a" font-size="9" font-weight="bold">Joao Paulo Cavalcanti</text>
+      <text x="210" y="162" fill="#0284c7" font-size="9" font-weight="bold">VCP</text>
+      <text x="245" y="162" fill="#475569" font-size="9">153201</text>
+      <text x="295" y="162" fill="#15803d" font-size="9" font-weight="bold">15/05/2027</text>
+      <text x="365" y="162" fill="#94a3b8" font-size="9">-</text>
+      <text x="440" y="162" fill="#0f172a" font-size="8">RII: SIM | RUN-UP: NÃO | BORO: SIM | NDT: NÃO</text>
+      <text x="790" y="162" fill="#0f172a" font-size="8">ATR72: NÃO | A320: SIM | B737: NÃO | E190: NÃO</text>
+    </g>
+
+    <!-- Signatures and Footer Block -->
+    <g transform="translate(16, 440)">
+      <rect x="0" y="0" width="1048" height="96" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" rx="4"/>
+      
+      <!-- RT Stamp Box -->
+      <rect x="680" y="12" width="340" height="72" rx="4" fill="#ffffff" stroke="#082f49" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <text x="850" y="32" fill="#082f49" font-size="11" font-weight="bold" text-anchor="middle">Alysson Rabelo</text>
+      <text x="850" y="48" fill="#475569" font-size="9" text-anchor="middle">Responsável Técnico • Technical Responsible</text>
+      <text x="850" y="62" fill="#64748b" font-size="8" text-anchor="middle">Certificado de Homologação ANAC COM-145-8942</text>
+      <line x1="720" y1="74" x2="980" y2="74" stroke="#082f49" stroke-width="1"/>
+
+      <!-- Mandatory declaration -->
+      <text x="20" y="28" fill="#0f172a" font-size="9" font-weight="bold">DECLARAÇÃO DE CONFORMIDADE REGULAMENTAR (RBAC 145 / EASA PART-145):</text>
+      <text x="20" y="44" fill="#475569" font-size="8">Atesto para os devidos fins de fiscalização aeronáutica que os profissionais acima listados possuem licenças técnicas vigentes,</text>
+      <text x="20" y="56" fill="#475569" font-size="8">treinamentos mandatórios cumpridos e estão formalmente designados a executar manutenção e liberação de retorno ao serviço (APRS).</text>
+      <text x="20" y="74" fill="#0284c7" font-size="8" font-weight="bold">IMPACTO AVIATION SERVIÇOS AERONÁUTICOS LTDA • SISTEMA HOMOLOGADO</text>
+    </g>
+  </g>
+</svg>

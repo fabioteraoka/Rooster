@@ -6,11 +6,14 @@ import {
   CalendarCheck,
   CheckCircle2,
   Clock,
+  Cloud,
+  CloudOff,
   Database,
   FileCheck2,
   FileSpreadsheet,
   FileText,
   Grid,
+  HelpCircle,
   History,
   LayoutDashboard,
   Plane,
@@ -30,7 +33,7 @@ interface NavItem {
 }
 
 export const Sidebar: React.FC = () => {
-  const { activeTab, setActiveTab } = useApp();
+  const { activeTab, setActiveTab, isCloud, isOffline } = useApp();
 
   const primaryItems: NavItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -64,6 +67,7 @@ export const Sidebar: React.FC = () => {
     { id: 'importar', label: 'Importar / Exportar Excel', icon: Database },
     { id: 'configuracoes', label: 'Configurações', icon: Settings },
     { id: 'auditoria', label: 'Auditoria & Histórico', icon: History },
+    { id: 'manual', label: 'Manual / Ajuda', icon: HelpCircle, highlight: true },
   ];
 
   const renderNavGroup = (title: string, items: NavItem[]) => (
@@ -126,8 +130,40 @@ export const Sidebar: React.FC = () => {
         {renderNavGroup('Parâmetros & Dados', systemItems)}
       </div>
 
-      {/* Footer Info */}
-      <div className="border-t border-slate-200 pt-3 px-2 text-[11px] text-slate-500">
+      {/* Footer Info & Connection Status */}
+      <div className="border-t border-slate-200 pt-3 px-2 text-[11px] text-slate-500 space-y-2">
+        {/* Connection Status Badge */}
+        <div className="flex items-center justify-between px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-md">
+          <div className="flex items-center gap-1.5 truncate">
+            {isCloud ? (
+              isOffline ? (
+                <CloudOff className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              ) : (
+                <Cloud className="w-3.5 h-3.5 text-sky-700 shrink-0" />
+              )
+            ) : (
+              <Database className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+            )}
+            <span className="text-[10px] font-semibold text-slate-700 truncate">
+              {isCloud
+                ? isOffline
+                  ? 'Nuvem (Offline / Cache)'
+                  : 'Nuvem (Firebase)'
+                : 'Armazenamento Local'}
+            </span>
+          </div>
+          <span
+            className={`w-2 h-2 rounded-full shrink-0 ${
+              isCloud
+                ? isOffline
+                  ? 'bg-amber-500'
+                  : 'bg-emerald-500 animate-pulse'
+                : 'bg-slate-400'
+            }`}
+            title={isCloud ? (isOffline ? 'Offline' : 'Online sincronizado') : 'Local'}
+          />
+        </div>
+
         <div className="flex items-center justify-between font-medium">
           <span>Impacto Aviation</span>
           <span className="text-slate-400 font-mono">v1.2.0</span>

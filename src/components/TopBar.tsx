@@ -2,8 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import {
   Calendar,
   Clock,
+  CloudOff,
   Download,
   Filter,
+  HelpCircle,
   Layers,
   MapPin,
   Printer,
@@ -32,6 +34,7 @@ export const TopBar: React.FC = () => {
     setCurrentUser,
     triggerPrint,
     activeTab,
+    isOffline,
   } = useApp();
 
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -59,6 +62,14 @@ export const TopBar: React.FC = () => {
 
   return (
     <header className="no-print bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+      {/* Offline Status Warning Bar */}
+      {isOffline && (
+        <div className="bg-amber-500 text-slate-950 px-4 py-1 text-xs font-bold flex items-center justify-center gap-2 border-b border-amber-600 shadow-2xs">
+          <CloudOff className="w-3.5 h-3.5 text-slate-950 shrink-0" />
+          <span>Offline — alterações serão sincronizadas</span>
+        </div>
+      )}
+
       {/* Primary Top Bar */}
       <div className="flex items-center justify-between px-6 py-2.5 gap-4">
         {/* Brand Zone */}
@@ -98,7 +109,7 @@ export const TopBar: React.FC = () => {
         </div>
 
         {/* User Role Switcher & Action Buttons */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           {/* User selector for demo permissions */}
           <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-md px-2 py-1 text-xs">
             <Shield className="w-3.5 h-3.5 text-slate-500" />
@@ -117,6 +128,20 @@ export const TopBar: React.FC = () => {
               ))}
             </select>
           </div>
+
+          {/* Contextual Help Button */}
+          <button
+            onClick={() =>
+              window.dispatchEvent(
+                new CustomEvent('open-help-drawer', { detail: { topic: activeTab } })
+              )
+            }
+            title="Ajuda contextual sobre esta tela (?)"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 transition-colors shadow-2xs whitespace-nowrap cursor-pointer"
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-sky-700" />
+            <span className="hidden sm:inline">Ajuda</span>
+          </button>
 
           {/* Quick Print Button */}
           <button

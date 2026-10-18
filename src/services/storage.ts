@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
 import { buildInitialCleanDatabase } from '../data/initialData';
+import { isFirebaseConfigured } from '../lib/firebase';
 import {
   AeronaveDesignacao,
   Auditoria,
@@ -23,9 +24,20 @@ import {
   Usuario,
 } from '../types';
 import { parseDataBrParaIso } from '../utils/businessRules';
+import { FirestoreAdapter } from './adapters/firestoreAdapter';
+import { LocalAdapter } from './adapters/localAdapter';
+import { StorageAdapter } from './storageInterface';
 
 export const STORAGE_KEY = 'impacto_aviation_roster_db_v2';
 export const OFFICIAL_BACKUP_KEY = 'impacto_aviation_official_backup';
+
+export async function sha256(message: string): Promise<string> {
+  const enc = new TextEncoder().encode(message.trim());
+  const hashBuf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(hashBuf))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
 
 export interface DatabaseState {
   pessoas: Pessoa[];
@@ -132,16 +144,41 @@ function notify() {
   });
 }
 
-export function subscribeToDatabase(listener: Listener): () => void {
+export const activeAdapter: StorageAdapter = isFirebaseConfigured()
+  ? new FirestoreAdapter()
+  : new LocalAdapter();
+
+if (typeof window !== 'undefined') {
+  activeAdapter.init().catch((err) => {
+    console.warn('Erro ao inicializar adaptador de armazenamento:', err);
+  });
+}
+
+export function getActiveAdapter(): StorageAdapter {
+  return activeAdapter;
+}
+
+export function addStorageListener(listener: Listener): () => void {
   listeners.add(listener);
   return () => {
     listeners.delete(listener);
   };
 }
 
+export function subscribeToDatabase(listener: Listener): () => void {
+  return activeAdapter.subscribe(listener);
+}
+
 let memoryDb: DatabaseState | null = null;
 
 export function loadDatabase(): DatabaseState {
+  if (activeAdapter && activeAdapter.isCloud) {
+    const cloudDb = activeAdapter.getDatabase();
+    if (cloudDb && Array.isArray(cloudDb.bases) && cloudDb.bases.length > 0) {
+      return cloudDb;
+    }
+  }
+
   if (memoryDb) return memoryDb;
 
   try {
@@ -1373,6 +1410,12 @@ export function commitImportPayload(
     usuarioNome
   );
 
+  if (activeAdapter && activeAdapter.isCloud) {
+    activeAdapter.importBatch(payload, mode, usuarioNome, sourceName).catch((err) => {
+      console.warn('Erro ao sincronizar lote com Firestore:', err);
+    });
+  }
+
   // Build Conference Data
   return generateConferenceData(newDb, payload, mode, sourceName, totalGravados);
 }
@@ -1824,6 +1867,9 @@ export const repository = {
       pessoa,
       usuarioNome
     );
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.savePessoa(pessoa, usuarioNome).catch((e) => console.warn(e));
+    }
   },
   deletePessoa: (id: string, usuarioNome = 'Admin'): Pessoa | null => {
     const db = loadDatabase();
@@ -1833,6 +1879,9 @@ export const repository = {
     db.pessoas.splice(idx, 1);
     persistDatabase(db);
     recordAudit('EXCLUIR', 'pessoa', id, `Excluiu pessoa ${removed.nome}`, removed, null, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.deletePessoa(id, usuarioNome).catch((e) => console.warn(e));
+    }
     return removed;
   },
 
@@ -1848,6 +1897,9 @@ export const repository = {
     }
     persistDatabase(db);
     recordAudit('EDITAR', 'base', base.id, `Salva base ${base.id} - ${base.nome}`, null, base, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.saveBase(base, usuarioNome).catch((e) => console.warn(e));
+    }
   },
 
   // Licencas
@@ -1883,6 +1935,9 @@ export const repository = {
       licenca,
       usuarioNome
     );
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.saveLicenca(licenca, usuarioNome).catch((e) => console.warn(e));
+    }
   },
   deleteLicenca: (id: string, usuarioNome = 'Admin'): Licenca | null => {
     const db = loadDatabase();
@@ -1892,6 +1947,9 @@ export const repository = {
     db.licencas.splice(idx, 1);
     persistDatabase(db);
     recordAudit('EXCLUIR', 'licenca', id, `Excluiu licença ${removed.numero}`, removed, null, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.deleteLicenca(id, usuarioNome).catch((e) => console.warn(e));
+    }
     return removed;
   },
 
@@ -1907,6 +1965,9 @@ export const repository = {
     }
     persistDatabase(db);
     recordAudit('EDITAR', 'curso_catalogo', curso.id, `Salva curso do catálogo ${curso.curso} (Validade: ${curso.validade_dias}d)`, null, curso, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.saveCurso(curso, usuarioNome).catch((e) => console.warn(e));
+    }
   },
   saveCursoCatalogo: (curso: CursoCatalogo, usuarioNome = 'Admin'): void => {
     repository.saveCurso(curso, usuarioNome);
@@ -1919,6 +1980,9 @@ export const repository = {
     db.cursosCatalogo.splice(idx, 1);
     persistDatabase(db);
     recordAudit('EXCLUIR', 'curso_catalogo', id, `Excluiu curso ${removed.curso}`, removed, null, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.deleteCurso(id, usuarioNome).catch((e) => console.warn(e));
+    }
     return removed;
   },
 
@@ -1966,6 +2030,9 @@ export const repository = {
       treinamento,
       usuarioNome
     );
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.saveTreinamento(treinamento, motoresIds, usuarioNome).catch((e) => console.warn(e));
+    }
   },
   deleteTreinamento: (id: string, usuarioNome = 'Admin'): Treinamento | null => {
     const db = loadDatabase();
@@ -1976,6 +2043,9 @@ export const repository = {
     db.treinamentosMotor = db.treinamentosMotor.filter((tm) => tm.treinamento_id !== id);
     persistDatabase(db);
     recordAudit('EXCLUIR', 'treinamento', id, `Excluiu treinamento ${id}`, removed, null, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.deleteTreinamento(id, usuarioNome).catch((e) => console.warn(e));
+    }
     return removed;
   },
   renovarTreinamento: (antigoId: string, novaData: string, usuarioNome = 'Admin'): Treinamento | null => {
@@ -2016,6 +2086,9 @@ export const repository = {
       novo,
       usuarioNome
     );
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.renovarTreinamento(antigoId, novaData, usuarioNome).catch((e) => console.warn(e));
+    }
     return novo;
   },
 
@@ -2031,6 +2104,9 @@ export const repository = {
     }
     persistDatabase(db);
     recordAudit('EDITAR', 'motor_catalogo', motor.id, `Salva motor ${motor.fabricante} ${motor.modelo}`, null, motor, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.saveMotor(motor, usuarioNome).catch((e) => console.warn(e));
+    }
   },
   deleteMotor: (id: string, usuarioNome = 'Admin'): MotorCatalogo | null => {
     const db = loadDatabase();
@@ -2041,6 +2117,9 @@ export const repository = {
     db.treinamentosMotor = db.treinamentosMotor.filter((tm) => tm.motor_id !== id);
     persistDatabase(db);
     recordAudit('EXCLUIR', 'motor_catalogo', id, `Excluiu motor ${removed.fabricante} ${removed.modelo}`, removed, null, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.deleteMotor(id, usuarioNome).catch((e) => console.warn(e));
+    }
     return removed;
   },
 
@@ -2052,6 +2131,9 @@ export const repository = {
     else db.designacoesPessoa.push(dp);
     persistDatabase(db);
     recordAudit('EDITAR', 'designacao_pessoa', dp.pessoa_id, `Atualizou designação pessoa ${dp.pessoa_id} (IMP: ${dp.imp})`, null, dp, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.saveDesignacaoPessoa(dp, usuarioNome).catch((e) => console.warn(e));
+    }
   },
   setDesignacaoBases: (pessoaId: string, bases: string[], usuarioNome = 'Admin'): void => {
     const db = loadDatabase();
@@ -2061,6 +2143,9 @@ export const repository = {
     });
     persistDatabase(db);
     recordAudit('EDITAR', 'designacao_base', pessoaId, `Atualizou bases designadas para ${pessoaId}: ${bases.join(', ')}`, null, bases, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.setDesignacaoBases(pessoaId, bases, usuarioNome).catch((e) => console.warn(e));
+    }
   },
   setDesignacaoBasesForPessoa: (pessoaId: string, bases: string[], usuarioNome = 'Admin'): void => {
     repository.setDesignacaoBases(pessoaId, bases, usuarioNome);
@@ -2077,6 +2162,9 @@ export const repository = {
     else db.designacoesFuncao.push({ pessoa_id: pessoaId, funcao, valor });
     persistDatabase(db);
     recordAudit('EDITAR', 'designacao_funcao', `${pessoaId}-${funcao}`, `Função ${funcao} = ${valor} para ${pessoaId}`, null, { funcao, valor }, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.setDesignacaoFuncao(pessoaId, funcao, valor, usuarioNome).catch((e) => console.warn(e));
+    }
   },
   setDesignacaoAeronave: (
     pessoaId: string,
@@ -2090,6 +2178,9 @@ export const repository = {
     else db.designacoesAeronave.push({ pessoa_id: pessoaId, aeronave, valor });
     persistDatabase(db);
     recordAudit('EDITAR', 'designacao_aeronave', `${pessoaId}-${aeronave}`, `Aeronave ${aeronave} = ${valor} para ${pessoaId}`, null, { aeronave, valor }, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.setDesignacaoAeronave(pessoaId, aeronave, valor, usuarioNome).catch((e) => console.warn(e));
+    }
   },
 
   // Configuracao
@@ -2098,5 +2189,8 @@ export const repository = {
     db.configuracao = { ...config };
     persistDatabase(db);
     recordAudit('EDITAR', 'configuracao', 'GLOBAL', `Atualizou parâmetros operacionais do sistema`, null, config, usuarioNome);
+    if (activeAdapter && activeAdapter.isCloud) {
+      activeAdapter.saveConfiguracao(config, usuarioNome).catch((e) => console.warn(e));
+    }
   },
 };

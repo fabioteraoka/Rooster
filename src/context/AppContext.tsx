@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
+  activeAdapter,
   DatabaseState,
   generateConferenceData,
   loadDatabase,
@@ -26,7 +27,8 @@ export type ActiveTab =
   | 'designacoes_crud'
   | 'importar'
   | 'configuracoes'
-  | 'auditoria';
+  | 'auditoria'
+  | 'manual';
 
 interface AppContextType {
   db: DatabaseState;
@@ -62,12 +64,16 @@ interface AppContextType {
   setLastConferenceData: (data: PostImportConferenceData | null) => void;
   loadEmbeddedOfficial: () => Promise<void>;
   isLoadingEmbedded: boolean;
+  // Cloud & Connection status
+  isCloud: boolean;
+  isOffline: boolean;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [db, setDb] = useState<DatabaseState>(loadDatabase());
+  const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [filtroBase, setFiltroBase] = useState<string>('TOTAL');
   const [filtroCategoria, setFiltroCategoria] = useState<'Mecânico' | 'Administrativo' | 'Todos'>('Mecânico');
@@ -159,6 +165,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -189,6 +206,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setLastConferenceData,
         loadEmbeddedOfficial,
         isLoadingEmbedded,
+        isCloud: activeAdapter.isCloud,
+        isOffline,
       }}
     >
       {children}
