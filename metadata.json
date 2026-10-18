@@ -1,0 +1,6 @@
+{
+  "name": "Impacto Aviation - Roster & Designação",
+  "description": "Sistema de gestão de roster de treinamentos, habilitações ANAC/FAA, motores e lista oficial de designação para mecânicos de manutenção aeronáutica.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
